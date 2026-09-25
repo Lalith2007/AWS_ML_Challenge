@@ -1,0 +1,9 @@
+stage,description,rows_processed,edges_processed,wall_clock_sec,throughput_rows_sec,throughput_edges_sec,peak_rss_mb,linear_extrapolation_100pct_sec,caveats
+1_tsv_reading_parsing,Streaming TSV read of ~22k S1 rows (1% volume),22069,0,0.0138,1596017.69,0,2241.72,1.38,I/O bound; operating system page cache will accelerate subsequent passes.
+2_gt_parsing,Parsing 1% Ground Truth rows into ID lists,22069,76294,0.0116,1901591.5,6573928.21,2241.72,1.16,Pure string splitting; scales linearly with Ground Truth row count.
+3_validation_split,Stratified 90/10 split on 1% S1 entities,22069,76355,0.0212,1042131.45,0,2241.72,2.12,O(N log N) sorting per stratum; negligible compute footprint.
+4_gt_expansion,Flattening 1% S1 ground-truth mapping into pair tuples,22069,76355,0.0957,230686.11,798134.84,2241.72,9.57,Memory scaling depends on tuple representation; generator streaming avoids memory spikes.
+5_f0_5_scoring,Entity-level macro-F0.5 scoring with per-entity diagnostics,22069,76355,0.0367,600654.58,2078163.05,2241.72,3.67,Linear in entity count; per-entity diagnostics can be disabled for faster batch loops.
+6_recall_evaluation,Blocking recall harness with distribution and stratum breakdowns,22069,76355,0.0534,413179.15,1429529.84,2241.72,5.34,Candidate set size directly governs comparison cost; candidate sets should remain compact.
+7_validator_wrapper,Subprocess execution of utils/validate_submission.py,2,1,0.0445,44.9,0,2241.72,12.0,Subprocess invocation has fixed ~0.2s Python interpreter overhead; test set size scales memory if --check-ids enabled.
+8_diagnostic_serialization,JSON and CSV serialization of diagnostic records,22069,0,0.1048,210631.89,0,2241.72,10.48,Pure I/O; JSON formatted with indentation is slower than streaming NDJSON or binary.

@@ -1,0 +1,88 @@
+{
+  "seed": 42,
+  "val_fraction": 0.1,
+  "total_s1_entities": 2206821,
+  "train_s1_entities": 1986138,
+  "val_s1_entities": 220683,
+  "actual_val_percentage": 10.000040782646169,
+  "stratification_fields": [
+    "country",
+    "multiplicity_bucket"
+  ],
+  "counts_by_country": {
+    "India": 883188,
+    "US": 1323633
+  },
+  "counts_by_multiplicity_bucket": {
+    "bucket_0": 123247,
+    "bucket_1": 119157,
+    "bucket_2_4": 1390168,
+    "bucket_5_plus": 574249
+  },
+  "counts_by_stratum": {
+    "India__bucket_0": {
+      "country": "India",
+      "multiplicity_bucket": "bucket_0",
+      "total_s1": 49351,
+      "train_s1": 44416,
+      "val_s1": 4935,
+      "val_percentage": 9.999797369860792
+    },
+    "India__bucket_1": {
+      "country": "India",
+      "multiplicity_bucket": "bucket_1",
+      "total_s1": 47468,
+      "train_s1": 42721,
+      "val_s1": 4747,
+      "val_percentage": 10.000421336479311
+    },
+    "India__bucket_2_4": {
+      "country": "India",
+      "multiplicity_bucket": "bucket_2_4",
+      "total_s1": 555561,
+      "train_s1": 500005,
+      "val_s1": 55556,
+      "val_percentage": 9.999982000176399
+    },
+    "India__bucket_5_plus": {
+      "country": "India",
+      "multiplicity_bucket": "bucket_5_plus",
+      "total_s1": 230808,
+      "train_s1": 207727,
+      "val_s1": 23081,
+      "val_percentage": 10.000086652109113
+    },
+    "US__bucket_0": {
+      "country": "US",
+      "multiplicity_bucket": "bucket_0",
+      "total_s1": 73896,
+      "train_s1": 66506,
+      "val_s1": 7390,
+      "val_percentage": 10.000541301288298
+    },
+    "US__bucket_1": {
+      "country": "US",
+      "multiplicity_bucket": "bucket_1",
+      "total_s1": 71689,
+      "train_s1": 64520,
+      "val_s1": 7169,
+      "val_percentage": 10.000139491414304
+    },
+    "US__bucket_2_4": {
+      "country": "US",
+      "multiplicity_bucket": "bucket_2_4",
+      "total_s1": 834607,
+      "train_s1": 751146,
+      "val_s1": 83461,
+      "val_percentage": 10.000035945061567
+    },
+    "US__bucket_5_plus": {
+      "country": "US",
+      "multiplicity_bucket": "bucket_5_plus",
+      "total_s1": 343441,
+      "train_s1": 309097,
+      "val_s1": 34344,
+      "val_percentage": 9.9999708829173
+    }
+  }
+}

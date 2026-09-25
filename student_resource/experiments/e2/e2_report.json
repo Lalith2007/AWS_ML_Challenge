@@ -1,0 +1,196 @@
+{
+  "execution": {
+    "duration_seconds": 27.786554098129272,
+    "telemetry": {
+      "python_version": "3.14.6 (v3.14.6:c63aec69bd5, Jun 10 2026, 08:07:54) [Clang 21.0.0 (clang-2100.1.1.101)]",
+      "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+      "system": "Darwin",
+      "release": "27.0.0",
+      "machine": "arm64",
+      "processor": "arm",
+      "cpu_count": 8,
+      "total_ram_gb": 8.0,
+      "available_ram_gb": 2.09
+    }
+  },
+  "integrity": {
+    "total_gt_s1": 2206821,
+    "total_s2_edges": 3693619,
+    "total_s3_edges": 3944746,
+    "total_gt_edges": 7638365,
+    "s1_resolution_passed": true,
+    "s2_resolution_passed": true,
+    "s3_resolution_passed": true,
+    "counts_reconciled": true,
+    "errors": []
+  },
+  "cross_country": {
+    "total_edges": 7638365,
+    "same_country_edges": 7638365,
+    "cross_country_edges": 0,
+    "same_country_pct": 100.0,
+    "cross_country_pct": 0.0,
+    "architectural_status": "SAFE FOR HARD PARTITIONING ON TRAINING GT",
+    "summary_records": [
+      {
+        "slice_type": "OVERALL",
+        "s1_country": "ALL",
+        "target_source": "ALL",
+        "total_edges": 7638365,
+        "same_country_edges": 7638365,
+        "cross_country_edges": 0,
+        "same_country_pct": 100.0,
+        "cross_country_pct": 0.0
+      },
+      {
+        "slice_type": "BY_TARGET_SOURCE",
+        "s1_country": "ALL",
+        "target_source": "S2",
+        "total_edges": 3693619,
+        "same_country_edges": 3693619,
+        "cross_country_edges": 0,
+        "same_country_pct": 100.0,
+        "cross_country_pct": 0.0
+      },
+      {
+        "slice_type": "BY_TARGET_SOURCE",
+        "s1_country": "ALL",
+        "target_source": "S3",
+        "total_edges": 3944746,
+        "same_country_edges": 3944746,
+        "cross_country_edges": 0,
+        "same_country_pct": 100.0,
+        "cross_country_pct": 0.0
+      },
+      {
+        "slice_type": "BY_S1_COUNTRY",
+        "s1_country": "India",
+        "target_source": "ALL",
+        "total_edges": 3059843,
+        "same_country_edges": 3059843,
+        "cross_country_edges": 0,
+        "same_country_pct": 100.0,
+        "cross_country_pct": 0.0
+      },
+      {
+        "slice_type": "BY_S1_COUNTRY",
+        "s1_country": "US",
+        "target_source": "ALL",
+        "total_edges": 4578522,
+        "same_country_edges": 4578522,
+        "cross_country_edges": 0,
+        "same_country_pct": 100.0,
+        "cross_country_pct": 0.0
+      },
+      {
+        "slice_type": "BY_COUNTRY_X_SOURCE",
+        "s1_country": "India",
+        "target_source": "S2",
+        "total_edges": 1480545,
+        "same_country_edges": 1480545,
+        "cross_country_edges": 0,
+        "same_country_pct": 100.0,
+        "cross_country_pct": 0.0
+      },
+      {
+        "slice_type": "BY_COUNTRY_X_SOURCE",
+        "s1_country": "India",
+        "target_source": "S3",
+        "total_edges": 1579298,
+        "same_country_edges": 1579298,
+        "cross_country_edges": 0,
+        "same_country_pct": 100.0,
+        "cross_country_pct": 0.0
+      },
+      {
+        "slice_type": "BY_COUNTRY_X_SOURCE",
+        "s1_country": "US",
+        "target_source": "S2",
+        "total_edges": 2213074,
+        "same_country_edges": 2213074,
+        "cross_country_edges": 0,
+        "same_country_pct": 100.0,
+        "cross_country_pct": 0.0
+      },
+      {
+        "slice_type": "BY_COUNTRY_X_SOURCE",
+        "s1_country": "US",
+        "target_source": "S3",
+        "total_edges": 2365448,
+        "same_country_edges": 2365448,
+        "cross_country_edges": 0,
+        "same_country_pct": 100.0,
+        "cross_country_pct": 0.0
+      }
+    ],
+    "cross_country_examples_count": 0
+  },
+  "target_exclusivity": {
+    "total_gt_edges": 7638365,
+    "total_distinct_targets": 7638365,
+    "total_duplicate_references": 0,
+    "architectural_status": "LEGALLY PLAUSIBLE FOR EXPERIMENTATION",
+    "s2_stats": {
+      "target_source": "S2",
+      "total_edges": 3693619,
+      "distinct_targets": 3693619,
+      "single_parent_targets": 3693619,
+      "multi_parent_targets": 0,
+      "max_parent_count": 1,
+      "duplicate_references": 0,
+      "exclusivity_rate_pct": 100.0
+    },
+    "s3_stats": {
+      "target_source": "S3",
+      "total_edges": 3944746,
+      "distinct_targets": 3944746,
+      "single_parent_targets": 3944746,
+      "multi_parent_targets": 0,
+      "max_parent_count": 1,
+      "duplicate_references": 0,
+      "exclusivity_rate_pct": 100.0
+    },
+    "summary_records": [
+      {
+        "target_source": "S2",
+        "total_edges": 3693619,
+        "distinct_targets": 3693619,
+        "single_parent_targets": 3693619,
+        "multi_parent_targets": 0,
+        "max_parent_count": 1,
+        "duplicate_references": 0,
+        "exclusivity_rate_pct": 100.0
+      },
+      {
+        "target_source": "S3",
+        "total_edges": 3944746,
+        "distinct_targets": 3944746,
+        "single_parent_targets": 3944746,
+        "multi_parent_targets": 0,
+        "max_parent_count": 1,
+        "duplicate_references": 0,
+        "exclusivity_rate_pct": 100.0
+      },
+      {
+        "target_source": "OVERALL",
+        "total_edges": 7638365,
+        "distinct_targets": 7638365,
+        "single_parent_targets": 7638365,
+        "multi_parent_targets": 0,
+        "max_parent_count": 1,
+        "duplicate_references": 0,
+        "exclusivity_rate_pct": 100.0
+      }
+    ],
+    "indegree_distribution": {
+      "1": 7638365
+    },
+    "multi_parent_examples_count": 0
+  },
+  "architectural_decisions": {
+    "country_partition": "SAFE FOR HARD PARTITIONING ON TRAINING GT",
+    "g4_assignment": "LEGALLY PLAUSIBLE FOR EXPERIMENTATION"
+  },
+  "e1_documentation_correction": "precision weighting = 2x, not 4x",
+  "e2_status": "PASS WITH FINDINGS"
+}
