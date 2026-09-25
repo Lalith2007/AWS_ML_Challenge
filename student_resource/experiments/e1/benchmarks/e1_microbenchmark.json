@@ -1,0 +1,113 @@
+{
+  "telemetry": {
+    "python_version": "3.14.6 (v3.14.6:c63aec69bd5, Jun 10 2026, 08:07:54) [Clang 21.0.0 (clang-2100.1.1.101)]",
+    "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+    "system": "Darwin",
+    "release": "27.0.0",
+    "machine": "arm64",
+    "processor": "arm",
+    "cpu_count": 8,
+    "total_ram_gb": 8.0,
+    "available_ram_gb": 1.58
+  },
+  "sample_size_s1": 22069,
+  "sample_size_gt_edges": 76355,
+  "stages": [
+    {
+      "stage": "1_tsv_reading_parsing",
+      "description": "Streaming TSV read of ~22k S1 rows (1% volume)",
+      "rows_processed": 22069,
+      "edges_processed": 0,
+      "wall_clock_sec": 0.0138,
+      "throughput_rows_sec": 1596017.69,
+      "throughput_edges_sec": 0,
+      "peak_rss_mb": 2241.72,
+      "linear_extrapolation_100pct_sec": 1.38,
+      "caveats": "I/O bound; operating system page cache will accelerate subsequent passes."
+    },
+    {
+      "stage": "2_gt_parsing",
+      "description": "Parsing 1% Ground Truth rows into ID lists",
+      "rows_processed": 22069,
+      "edges_processed": 76294,
+      "wall_clock_sec": 0.0116,
+      "throughput_rows_sec": 1901591.5,
+      "throughput_edges_sec": 6573928.21,
+      "peak_rss_mb": 2241.72,
+      "linear_extrapolation_100pct_sec": 1.16,
+      "caveats": "Pure string splitting; scales linearly with Ground Truth row count."
+    },
+    {
+      "stage": "3_validation_split",
+      "description": "Stratified 90/10 split on 1% S1 entities",
+      "rows_processed": 22069,
+      "edges_processed": 76355,
+      "wall_clock_sec": 0.0212,
+      "throughput_rows_sec": 1042131.45,
+      "throughput_edges_sec": 0,
+      "peak_rss_mb": 2241.72,
+      "linear_extrapolation_100pct_sec": 2.12,
+      "caveats": "O(N log N) sorting per stratum; negligible compute footprint."
+    },
+    {
+      "stage": "4_gt_expansion",
+      "description": "Flattening 1% S1 ground-truth mapping into pair tuples",
+      "rows_processed": 22069,
+      "edges_processed": 76355,
+      "wall_clock_sec": 0.0957,
+      "throughput_rows_sec": 230686.11,
+      "throughput_edges_sec": 798134.84,
+      "peak_rss_mb": 2241.72,
+      "linear_extrapolation_100pct_sec": 9.57,
+      "caveats": "Memory scaling depends on tuple representation; generator streaming avoids memory spikes."
+    },
+    {
+      "stage": "5_f0_5_scoring",
+      "description": "Entity-level macro-F0.5 scoring with per-entity diagnostics",
+      "rows_processed": 22069,
+      "edges_processed": 76355,
+      "wall_clock_sec": 0.0367,
+      "throughput_rows_sec": 600654.58,
+      "throughput_edges_sec": 2078163.05,
+      "peak_rss_mb": 2241.72,
+      "linear_extrapolation_100pct_sec": 3.67,
+      "caveats": "Linear in entity count; per-entity diagnostics can be disabled for faster batch loops."
+    },
+    {
+      "stage": "6_recall_evaluation",
+      "description": "Blocking recall harness with distribution and stratum breakdowns",
+      "rows_processed": 22069,
+      "edges_processed": 76355,
+      "wall_clock_sec": 0.0534,
+      "throughput_rows_sec": 413179.15,
+      "throughput_edges_sec": 1429529.84,
+      "peak_rss_mb": 2241.72,
+      "linear_extrapolation_100pct_sec": 5.34,
+      "caveats": "Candidate set size directly governs comparison cost; candidate sets should remain compact."
+    },
+    {
+      "stage": "7_validator_wrapper",
+      "description": "Subprocess execution of utils/validate_submission.py",
+      "rows_processed": 2,
+      "edges_processed": 1,
+      "wall_clock_sec": 0.0445,
+      "throughput_rows_sec": 44.9,
+      "throughput_edges_sec": 0,
+      "peak_rss_mb": 2241.72,
+      "linear_extrapolation_100pct_sec": 12.0,
+      "caveats": "Subprocess invocation has fixed ~0.2s Python interpreter overhead; test set size scales memory if --check-ids enabled."
+    },
+    {
+      "stage": "8_diagnostic_serialization",
+      "description": "JSON and CSV serialization of diagnostic records",
+      "rows_processed": 22069,
+      "edges_processed": 0,
+      "wall_clock_sec": 0.1048,
+      "throughput_rows_sec": 210631.89,
+      "throughput_edges_sec": 0,
+      "peak_rss_mb": 2241.72,
+      "linear_extrapolation_100pct_sec": 10.48,
+      "caveats": "Pure I/O; JSON formatted with indentation is slower than streaming NDJSON or binary."
+    }
+  ]
+}

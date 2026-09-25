@@ -1,0 +1,17 @@
+================================================================================
+OFFICIAL VALIDATOR RUN LOG — Status: PASS (Exit code: 0)
+Command: /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 /Users/lalith/Desktop/AWS_Challenge/student_resource/utils/validate_submission.py --matching tests/fixtures/validator_fixtures/matching_results.tsv --test-dir tests/fixtures/validator_fixtures
+Working Dir: /Users/lalith/Desktop/AWS_Challenge
+================================================================================
+
+--- STDOUT ---
+ML Challenge 2026 — submission validator
+  test dir: tests/fixtures/validator_fixtures
+  required S1 entities: 2
+  matching_results.tsv: 2 rows (1 empty, 1 non-empty).
+
+WARNING: ID-existence check is OFF (the default) — not checking that matched/candidate IDs exist in the test set. Every other rule is still checked. Re-run with --check-ids to enable it (needs test_source2/3.tsv; uses more memory). A nonexistent ID only lowers your score, never rejects your submission.
+WARNING: output/candidate_pairs.tsv not found — skipping candidate_pairs.tsv checks. It is optional here, but your final submission zip must include output/candidate_pairs.tsv.
+PASS — no blocking issues found. Safe to submit.
+
+

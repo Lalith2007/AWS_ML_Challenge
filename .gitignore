@@ -1,0 +1,23 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Pytest and runtime caches
+.pytest_cache/
+.ipynb_checkpoints/
+aws_challenge
+
+# macOS / OS metadata
+.DS_Store
+Thumbs.db
+
+# Challenge raw datasets (multi-gigabyte raw TSVs)
+student_resource/dataset/
+
+# PDFs and binary downloads
+*.pdf
+
+# Virtual environments and secrets
+venv/
+.env

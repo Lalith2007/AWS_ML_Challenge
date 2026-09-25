@@ -1,0 +1,18 @@
+================================================================================
+OFFICIAL VALIDATOR RUN LOG — Status: FAIL (Exit code: 1)
+Command: /Library/Frameworks/Python.framework/Versions/3.14/bin/python3 /Users/lalith/Desktop/AWS_Challenge/student_resource/utils/validate_submission.py --matching /var/folders/qt/9lb5lgfx29x60h3pmw1czxm40000gn/T/tmp1ey2_nsh/incomplete.tsv --test-dir /var/folders/qt/9lb5lgfx29x60h3pmw1czxm40000gn/T/tmp1ey2_nsh/test
+Working Dir: /var/folders/qt/9lb5lgfx29x60h3pmw1czxm40000gn/T/tmp1ey2_nsh
+================================================================================
+
+--- STDOUT ---
+ML Challenge 2026 — submission validator
+  test dir: /var/folders/qt/9lb5lgfx29x60h3pmw1czxm40000gn/T/tmp1ey2_nsh/test
+  required S1 entities: 2
+  incomplete.tsv: 1 rows (0 empty, 1 non-empty).
+
+WARNING: ID-existence check is OFF (the default) — not checking that matched/candidate IDs exist in the test set. Every other rule is still checked. Re-run with --check-ids to enable it (needs test_source2/3.tsv; uses more memory). A nonexistent ID only lowers your score, never rejects your submission.
+WARNING: output/candidate_pairs.tsv not found — skipping candidate_pairs.tsv checks. It is optional here, but your final submission zip must include output/candidate_pairs.tsv.
+FAIL — 1 issue(s) to fix before submitting:
+  1. incomplete.tsv: required S1 entity(ies) missing: S1-2. Every entity in test_source1.tsv needs a row (empty = no match).
+
+
