@@ -1,0 +1,4 @@
+target_source,total_edges,distinct_targets,single_parent_targets,multi_parent_targets,max_parent_count,duplicate_references,exclusivity_rate_pct
+S2,3693619,3693619,3693619,0,1,0,100.0
+S3,3944746,3944746,3944746,0,1,0,100.0
+OVERALL,7638365,7638365,7638365,0,1,0,100.0

@@ -1,0 +1,240 @@
+{
+  "integrity_checks": {
+    "train_S1_exists": true,
+    "train_S1_header_valid": true,
+    "train_S2_exists": true,
+    "train_S2_header_valid": true,
+    "train_S3_exists": true,
+    "train_S3_header_valid": true,
+    "train_GT_exists": true,
+    "train_GT_header_valid": true,
+    "test_S1_exists": true,
+    "test_S1_header_valid": true,
+    "test_S2_exists": true,
+    "test_S2_header_valid": true,
+    "test_S3_exists": true,
+    "test_S3_header_valid": true
+  },
+  "placeholder_summary": [
+    {
+      "dataset": "train",
+      "source": "S1",
+      "file_name": "train_source1.tsv",
+      "total_rows": 2206821,
+      "pandas_nan_count": 0,
+      "empty_string_count": 0,
+      "whitespace_only_count": 0,
+      "whole_field_placeholder_count": 0,
+      "effectively_missing_count": 0,
+      "effectively_missing_pct": 0.0,
+      "nonempty_address_count": 2206821,
+      "rows_with_component_placeholder_cleaned": 1089,
+      "rows_with_component_placeholder_cleaned_pct": 0.04934700186376693,
+      "rows_with_component_placeholder_raw_ws": 411,
+      "rows_clean_nonempty": 2205732,
+      "rows_clean_nonempty_pct": 99.95065299813623
+    },
+    {
+      "dataset": "train",
+      "source": "S2",
+      "file_name": "train_source2.tsv",
+      "total_rows": 5034616,
+      "pandas_nan_count": 168967,
+      "empty_string_count": 168967,
+      "whitespace_only_count": 0,
+      "whole_field_placeholder_count": 0,
+      "effectively_missing_count": 168967,
+      "effectively_missing_pct": 3.3561050137686768,
+      "nonempty_address_count": 4865649,
+      "rows_with_component_placeholder_cleaned": 177566,
+      "rows_with_component_placeholder_cleaned_pct": 3.6493795586159212,
+      "rows_with_component_placeholder_raw_ws": 7851,
+      "rows_clean_nonempty": 4688083,
+      "rows_clean_nonempty_pct": 96.35062044138408
+    },
+    {
+      "dataset": "train",
+      "source": "S3",
+      "file_name": "train_source3.tsv",
+      "total_rows": 5285603,
+      "pandas_nan_count": 175916,
+      "empty_string_count": 175916,
+      "whitespace_only_count": 0,
+      "whole_field_placeholder_count": 0,
+      "effectively_missing_count": 175916,
+      "effectively_missing_pct": 3.3282106128666875,
+      "nonempty_address_count": 5109687,
+      "rows_with_component_placeholder_cleaned": 176313,
+      "rows_with_component_placeholder_cleaned_pct": 3.4505636059508147,
+      "rows_with_component_placeholder_raw_ws": 6945,
+      "rows_clean_nonempty": 4933374,
+      "rows_clean_nonempty_pct": 96.54943639404918
+    },
+    {
+      "dataset": "test",
+      "source": "S1",
+      "file_name": "test_source1.tsv",
+      "total_rows": 1732544,
+      "pandas_nan_count": 0,
+      "empty_string_count": 0,
+      "whitespace_only_count": 0,
+      "whole_field_placeholder_count": 0,
+      "effectively_missing_count": 0,
+      "effectively_missing_pct": 0.0,
+      "nonempty_address_count": 1732544,
+      "rows_with_component_placeholder_cleaned": 1048,
+      "rows_with_component_placeholder_cleaned_pct": 0.06048908425990913,
+      "rows_with_component_placeholder_raw_ws": 410,
+      "rows_clean_nonempty": 1731496,
+      "rows_clean_nonempty_pct": 99.93951091574009
+    },
+    {
+      "dataset": "test",
+      "source": "S2",
+      "file_name": "test_source2.tsv",
+      "total_rows": 4887273,
+      "pandas_nan_count": 129408,
+      "empty_string_count": 129408,
+      "whitespace_only_count": 0,
+      "whole_field_placeholder_count": 0,
+      "effectively_missing_count": 129408,
+      "effectively_missing_pct": 2.647856995097266,
+      "nonempty_address_count": 4757865,
+      "rows_with_component_placeholder_cleaned": 142910,
+      "rows_with_component_placeholder_cleaned_pct": 3.0036581533944324,
+      "rows_with_component_placeholder_raw_ws": 6653,
+      "rows_clean_nonempty": 4614955,
+      "rows_clean_nonempty_pct": 96.99634184660557
+    },
+    {
+      "dataset": "test",
+      "source": "S3",
+      "file_name": "test_source3.tsv",
+      "total_rows": 5082316,
+      "pandas_nan_count": 136098,
+      "empty_string_count": 136098,
+      "whitespace_only_count": 0,
+      "whole_field_placeholder_count": 0,
+      "effectively_missing_count": 136098,
+      "effectively_missing_pct": 2.6778736308407427,
+      "nonempty_address_count": 4946218,
+      "rows_with_component_placeholder_cleaned": 142735,
+      "rows_with_component_placeholder_cleaned_pct": 2.8857401756250938,
+      "rows_with_component_placeholder_raw_ws": 5880,
+      "rows_clean_nonempty": 4803483,
+      "rows_clean_nonempty_pct": 97.1142598243749
+    }
+  ],
+  "s3_exact_stats": {
+    "total_s3_evaluated": 3944746,
+    "name_exact": 876784,
+    "name_exact_pct": 22.22662751923698,
+    "addr_exact": 170441,
+    "addr_exact_pct": 4.320709115365096,
+    "both_exact": 211,
+    "both_exact_pct": 0.005348886848481499,
+    "name_only": 876573,
+    "name_only_pct": 22.2212786323885,
+    "addr_only": 170230,
+    "addr_only_pct": 4.315360228516614,
+    "neither_exact": 2897732,
+    "neither_exact_pct": 73.4580122522464,
+    "addr_status_counts": {
+      "both_present": 3772912,
+      "s1_present_s3_missing": 171834
+    },
+    "country_stats": {
+      "US": {
+        "total": 2365448,
+        "neither_exact": 1649398,
+        "addr_exact": 104692,
+        "addr_only": 104692,
+        "name_exact": 611358,
+        "name_only": 611358
+      },
+      "India": {
+        "total": 1579298,
+        "neither_exact": 1248334,
+        "name_exact": 265426,
+        "name_only": 265215,
+        "addr_exact": 65749,
+        "addr_only": 65538,
+        "both_exact": 211
+      }
+    },
+    "multiplicity_stats": {
+      "4": {
+        "total": 1000942,
+        "name_exact": 222202,
+        "addr_exact": 44433,
+        "both_exact": 54
+      },
+      "5": {
+        "total": 833865,
+        "addr_exact": 38564,
+        "name_exact": 184148,
+        "both_exact": 57
+      },
+      "3": {
+        "total": 820080,
+        "addr_exact": 33237,
+        "name_exact": 183492,
+        "both_exact": 45
+      },
+      "6+": {
+        "total": 845689,
+        "name_exact": 185688,
+        "addr_exact": 41978,
+        "both_exact": 48
+      },
+      "2": {
+        "total": 383763,
+        "name_exact": 87265,
+        "addr_exact": 10941,
+        "both_exact": 7
+      },
+      "1": {
+        "total": 60407,
+        "name_exact": 13989,
+        "addr_exact": 1288
+      }
+    },
+    "total_both_exact_found": 50
+  },
+  "s3_country_breakdown": [
+    {
+      "country": "India",
+      "total_edges": 1579298,
+      "name_exact": 265426,
+      "name_exact_pct": 16.80658115187887,
+      "addr_exact": 65749,
+      "addr_exact_pct": 4.163178830087799,
+      "both_exact": 211,
+      "both_exact_pct": 0.01336036644129227,
+      "name_only": 265215,
+      "name_only_pct": 16.79322078543758,
+      "addr_only": 65538,
+      "addr_only_pct": 4.149818463646506,
+      "neither_exact": 1248334,
+      "neither_exact_pct": 79.04360038447462
+    },
+    {
+      "country": "US",
+      "total_edges": 2365448,
+      "name_exact": 611358,
+      "name_exact_pct": 25.84533669731907,
+      "addr_exact": 104692,
+      "addr_exact_pct": 4.425884652716949,
+      "both_exact": 0,
+      "both_exact_pct": 0.0,
+      "name_only": 611358,
+      "name_only_pct": 25.84533669731907,
+      "addr_only": 104692,
+      "addr_only_pct": 4.425884652716949,
+      "neither_exact": 1649398,
+      "neither_exact_pct": 69.72877864996399
+    }
+  ],
+  "timestamp": "2026-09-25 19:20:16",
+  "e0_status": "PASS WITH FINDINGS"
+}

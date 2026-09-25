@@ -1,0 +1,12 @@
+metric,count,percentage
+Total S3 True Edges Evaluated,3944746,100.0
+NAME_EXACT (normalized),876784,22.22662751923698
+ADDR_EXACT (normalized),170441,4.320709115365096
+BOTH_EXACT (name & addr),211,0.005348886848481499
+Name Exact Only,876573,22.2212786323885
+Address Exact Only,170230,4.315360228516614
+Neither Exact,2897732,73.4580122522464
+Address Status: Both Present,3772912,95.64397809136507
+"Address Status: S1 Present, S3 Missing",171834,4.356021908634928
+"Address Status: S1 Missing, S3 Present",0,0.0
+Address Status: Both Missing,0,0.0
