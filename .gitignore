@@ -15,7 +15,10 @@ Thumbs.db
 # Challenge raw datasets (multi-gigabyte raw TSVs)
 student_resource/dataset/
 
-# PDFs and binary downloads
+# Problem statement documents and PDFs
+AWS_PS.md
+AWS_PS.pdf
+awsoptimization.pdf
 *.pdf
 
 # Virtual environments and secrets
