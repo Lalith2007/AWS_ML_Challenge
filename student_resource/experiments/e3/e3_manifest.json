@@ -1,0 +1,263 @@
+{
+  "stage": "E3",
+  "description": "L2 Symbolic Multi-Lane Blocking & Candidate Validation",
+  "status": "PASS WITH FINDINGS",
+  "duration_seconds": 1343.07,
+  "gt_integrity": {
+    "total_gt_checked": 7638365,
+    "cross_country_violations": 0,
+    "is_safe": true
+  },
+  "configuration": {
+    "enabled_lanes": [
+      "K1",
+      "K2",
+      "K3",
+      "K4",
+      "K5",
+      "K6",
+      "K7"
+    ],
+    "max_block_size": 500,
+    "max_candidates_per_query": 150,
+    "min_token_len": 3,
+    "max_token_doc_freq": 2000,
+    "ngram_size": 3
+  },
+  "overall_metrics": {
+    "total_gt_edges": 7638365,
+    "recovered_gt_edges": 6131064,
+    "overall_recall": 0.802667,
+    "overall_recall_pct": 80.267,
+    "total_candidate_pairs": 465180555,
+    "blocking_precision_proxy": 0.01318,
+    "candidate_to_gt_ratio": 60.9
+  },
+  "source_breakdown": {
+    "S2": {
+      "total_gt": 3693619,
+      "recovered_gt": 2982846,
+      "recall": 0.807567,
+      "recall_pct": 80.757
+    },
+    "S3": {
+      "total_gt": 3944746,
+      "recovered_gt": 3148218,
+      "recall": 0.798079,
+      "recall_pct": 79.808
+    }
+  },
+  "country_breakdown": {
+    "India": {
+      "total_gt": 3059843,
+      "recovered_gt": 2119656,
+      "recall": 0.692734,
+      "recall_pct": 69.273
+    },
+    "US": {
+      "total_gt": 4578522,
+      "recovered_gt": 4011408,
+      "recall": 0.876136,
+      "recall_pct": 87.614
+    }
+  },
+  "entity_coverage": {
+    "entities_with_gt": 3859621,
+    "entities_fully_covered": 2675668,
+    "entities_fully_covered_pct": 69.32,
+    "entities_partially_covered": 756372,
+    "entities_partially_covered_pct": 19.6,
+    "entities_uncovered": 427581,
+    "entities_uncovered_pct": 11.08
+  },
+  "candidate_volume_stats": {
+    "total_candidate_pairs": 465180555,
+    "mean_per_s1": 105.4,
+    "median_per_s1": 136.0,
+    "p90_per_s1": 150.0,
+    "p95_per_s1": 150.0,
+    "p99_per_s1": 150.0,
+    "max_per_s1": 150,
+    "min_per_s1": 0
+  },
+  "lane_contributions": {
+    "K1": {
+      "candidate_pairs": 377367785,
+      "unique_gt_recovered": 5015692,
+      "marginal_gt_recovered": 5015692,
+      "marginal_recall_pct": 65.6645,
+      "oversized_keys": 5063
+    },
+    "K2": {
+      "candidate_pairs": 125822780,
+      "unique_gt_recovered": 4074813,
+      "marginal_gt_recovered": 367049,
+      "marginal_recall_pct": 4.8053,
+      "oversized_keys": 209
+    },
+    "K3": {
+      "candidate_pairs": 444416846,
+      "unique_gt_recovered": 4806905,
+      "marginal_gt_recovered": 216582,
+      "marginal_recall_pct": 2.8354,
+      "oversized_keys": 3259
+    },
+    "K4": {
+      "candidate_pairs": 72746509,
+      "unique_gt_recovered": 4317795,
+      "marginal_gt_recovered": 639404,
+      "marginal_recall_pct": 8.371,
+      "oversized_keys": 65
+    },
+    "K5": {
+      "candidate_pairs": 73167134,
+      "unique_gt_recovered": 3400362,
+      "marginal_gt_recovered": 95512,
+      "marginal_recall_pct": 1.2504,
+      "oversized_keys": 128
+    },
+    "K6": {
+      "candidate_pairs": 205448897,
+      "unique_gt_recovered": 1871780,
+      "marginal_gt_recovered": 5789,
+      "marginal_recall_pct": 0.0758,
+      "oversized_keys": 3190
+    },
+    "K7": {
+      "candidate_pairs": 305684,
+      "unique_gt_recovered": 3082,
+      "marginal_gt_recovered": 406,
+      "marginal_recall_pct": 0.0053,
+      "oversized_keys": 70
+    }
+  },
+  "failure_analysis": {
+    "total_missed": 5000,
+    "dimensions": {
+      "name_bucket": {
+        "EMPTY_NAME": {
+          "count": 3363,
+          "percentage": 67.26
+        },
+        "LOW_SIMILARITY": {
+          "count": 1198,
+          "percentage": 23.96
+        },
+        "SUBSTRING_NAME": {
+          "count": 229,
+          "percentage": 4.58
+        },
+        "HIGH_SIMILARITY": {
+          "count": 180,
+          "percentage": 3.6
+        },
+        "EXACT_NAME": {
+          "count": 30,
+          "percentage": 0.6
+        }
+      },
+      "address_bucket": {
+        "SHARED_NUMBER_POSTAL": {
+          "count": 3521,
+          "percentage": 70.42
+        },
+        "SHARED_LOCALITY": {
+          "count": 704,
+          "percentage": 14.08
+        },
+        "EXACT_ADDRESS": {
+          "count": 554,
+          "percentage": 11.08
+        },
+        "DIFFERENT_ADDRESS": {
+          "count": 137,
+          "percentage": 2.74
+        },
+        "EMPTY_ADDRESS": {
+          "count": 84,
+          "percentage": 1.68
+        }
+      },
+      "script_mismatch": {
+        "YES": {
+          "count": 3437,
+          "percentage": 68.74
+        },
+        "NO": {
+          "count": 1563,
+          "percentage": 31.26
+        }
+      },
+      "transliteration": {
+        "TRANSLITERATION_TARGET": {
+          "count": 3437,
+          "percentage": 68.74
+        },
+        "LATIN_VARIATION": {
+          "count": 1563,
+          "percentage": 31.26
+        }
+      },
+      "dba_involvement": {
+        "STANDARD_NAME": {
+          "count": 4558,
+          "percentage": 91.16
+        },
+        "DBA_INVOLVED": {
+          "count": 442,
+          "percentage": 8.84
+        }
+      },
+      "country": {
+        "India": {
+          "count": 5000,
+          "percentage": 100.0
+        }
+      },
+      "source": {
+        "S2": {
+          "count": 5000,
+          "percentage": 100.0
+        }
+      }
+    }
+  },
+  "artifacts": {
+    "candidate_pairs.tsv": {
+      "path": "student_resource/experiments/e3/candidate_pairs.tsv",
+      "size_bytes": 13386869280,
+      "line_count": 465180556,
+      "sha256": "ef93bdde108ba0a53c2fb377fa8b74ef5f774ddc93dc884acc13226484f089dc"
+    },
+    "e3_report.json": {
+      "path": "student_resource/experiments/e3/e3_report.json",
+      "size_bytes": 5082,
+      "line_count": 218,
+      "sha256": "65e04880fe65d49696bbf302d86ea6f9e903bde551ded0b7a8e86772767fc29f"
+    },
+    "e3_report.md": {
+      "path": "student_resource/experiments/e3/e3_report.md",
+      "size_bytes": 4614,
+      "line_count": 107,
+      "sha256": "07f889b98b65f3d9cb5a227a309d7921b836790b784a7bd8805768f50c0de861"
+    },
+    "e3_metrics_overall.csv": {
+      "path": "student_resource/experiments/e3/e3_metrics_overall.csv",
+      "size_bytes": 389,
+      "line_count": 16,
+      "sha256": "4f0d4cb4014ac1bbd5e6200f14ea980741773be18251e21bcf6999c116a9da10"
+    },
+    "e3_lane_contributions.csv": {
+      "path": "student_resource/experiments/e3/e3_lane_contributions.csv",
+      "size_bytes": 367,
+      "line_count": 8,
+      "sha256": "b3f48d1fdfa2ec6023d99551f4cda00554e98b9fbafce9c1dd91f9f878f1ccb9"
+    },
+    "e3_failure_analysis.csv": {
+      "path": "student_resource/experiments/e3/e3_failure_analysis.csv",
+      "size_bytes": 714,
+      "line_count": 19,
+      "sha256": "4d9371649dc329629a5780122688ac1943cf2da17bcf27d2e20068cd8b6e1030"
+    }
+  }
+}

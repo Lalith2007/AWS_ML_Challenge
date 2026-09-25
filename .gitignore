@@ -24,3 +24,8 @@ awsoptimization.pdf
 # Virtual environments and secrets
 venv/
 .env
+
+# Generated large candidate pairs and blocking data
+**/candidate_pairs.tsv
+*.tsv.gz
+*.parquet
