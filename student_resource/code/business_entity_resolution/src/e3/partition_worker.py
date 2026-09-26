@@ -125,6 +125,14 @@ def main():
         "lane_metrics": res.lane_metrics,
         "candidate_lengths": res.candidate_lengths[:5000],
         "candidate_histogram": dict(res.candidate_histogram),
+        "candidate_histogram_cap150": dict(res.candidate_histogram_cap150),
+        "queries_hitting_cap_150": res.queries_hitting_cap_150,
+        "gt_edges_lost_to_cap_150": res.gt_edges_lost_to_cap_150,
+        "recovered_gt_edges_cap150": res.recovered_gt_edges_cap150,
+        "total_candidate_pairs_cap150": res.total_candidate_pairs_cap150,
+        "s1_recovered_counts": res.s1_recovered_counts,
+        "s1_recovered_counts_cap150": res.s1_recovered_counts_cap150,
+        "k4_diagnostics": dict(res.k4_diagnostics),
         "total_oversized_query_events": res.total_oversized_query_events,
         "missed_gt_edges": res.missed_gt_edges[:5000],  # sample up to 5k for failure analysis
     }

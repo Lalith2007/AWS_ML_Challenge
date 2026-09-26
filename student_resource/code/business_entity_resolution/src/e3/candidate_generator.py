@@ -37,12 +37,26 @@ class PartitionRunResult:
     entities_partially_covered: int = 0
     entities_uncovered: int = 0
 
-    # Per-lane metrics: lane -> {"pairs": int, "recovered": int, "marginal_recovered": int, "oversized_keys": int}
+    # Global S1 entity coverage tracking: s1_id -> recovered_gt_count in this partition
+    s1_recovered_counts: Dict[str, int] = field(default_factory=dict)
+    s1_recovered_counts_cap150: Dict[str, int] = field(default_factory=dict)
+
+    # Per-lane metrics: lane -> {"candidate_pairs": int, "standalone_gt_recovered": int, "marginal_gt_recovered": int, "oversized_keys": int}
     lane_metrics: Dict[str, Dict[str, int]] = field(default_factory=dict)
 
     # Candidate count histogram: count -> frequency
     candidate_lengths: List[int] = field(default_factory=list)
     candidate_histogram: Counter = field(default_factory=Counter)
+    candidate_histogram_cap150: Counter = field(default_factory=Counter)
+
+    # AB Cap Diagnostics (comparing Config A: cap=150 vs Config B: current config)
+    queries_hitting_cap_150: int = 0
+    gt_edges_lost_to_cap_150: int = 0
+    recovered_gt_edges_cap150: int = 0
+    total_candidate_pairs_cap150: int = 0
+
+    # Targeted K4 diagnostic breakdown for missed edges
+    k4_diagnostics: Counter = field(default_factory=Counter)
 
     # Oversized block events encountered during querying
     total_oversized_query_events: int = 0
@@ -133,16 +147,24 @@ def run_partition_blocking(
         total_target_records_indexed=len(index.target_ids),
     )
 
+    ORDERED_LANES = ["K1", "K2", "K3", "K4", "K5", "K6", "K7"]
+
     # Initialize per-lane metric tracking
-    for lane in config.enabled_lanes:
+    for lane in ORDERED_LANES:
         result.lane_metrics[lane] = {
             "candidate_pairs": 0,
-            "unique_gt_recovered": 0,
+            "standalone_gt_recovered": 0,
             "marginal_gt_recovered": 0,
             "oversized_keys": audit_stats["lane_stats"].get(lane, {}).get("oversized_keys_count", 0),
         }
 
-    seen_marginal_gt: Set[Tuple[str, str]] = set()
+    result.k4_diagnostics = Counter({
+        "k4_generated_truncated_by_cap": 0,
+        "k4_key_suppressed_as_oversized": 0,
+        "parsing_failed_no_s1_structural_key": 0,
+        "k4_never_generated_pair": 0,
+        "pair_not_country_source_compatible": 0,
+    })
 
     print(f"[{country} | {target_source}] Querying S1 records...")
     s1_count = 0
@@ -172,45 +194,57 @@ def run_partition_blocking(
             result.entities_with_gt += 1
             result.total_gt_edges += num_true
 
-        # Track per-lane candidates and multi-lane agreement
+        # Track per-lane candidate counts and multi-lane agreement
         cand_lane_counts: Counter[str] = Counter()
+        for lane in ORDERED_LANES:
+            if lane in config.enabled_lanes:
+                cands = lane_cands.get(lane, set())
+                result.lane_metrics[lane]["candidate_pairs"] += len(cands)
+                for c in cands:
+                    cand_lane_counts[c] += 1
 
-        for lane in config.enabled_lanes:
-            cands = lane_cands.get(lane, set())
-            result.lane_metrics[lane]["candidate_pairs"] += len(cands)
-            for c in cands:
-                cand_lane_counts[c] += 1
-
-            if num_true > 0:
-                rec_lane = cands & true_source_targets
-                result.lane_metrics[lane]["unique_gt_recovered"] += len(rec_lane)
-
-                # Marginal recall: recovered by this lane that wasn't previously seen in order
-                for t in rec_lane:
-                    pair = (s1_id, t)
-                    if pair not in seen_marginal_gt:
-                        seen_marginal_gt.add(pair)
-                        result.lane_metrics[lane]["marginal_gt_recovered"] += 1
-
-        # Multi-lane agreement ranking: prioritize candidates retrieved by multiple lanes, tie-break by ID
-        sorted_union = sorted(
+        # Multi-lane agreement ranking
+        sorted_all = sorted(
             cand_lane_counts.keys(),
             key=lambda cid: (-cand_lane_counts[cid], cid)
         )
-        if len(sorted_union) > config.max_candidates_per_query:
-            sorted_union = sorted_union[:config.max_candidates_per_query]
+
+        # Config B: final candidate set (untruncated or configurable)
+        if config.max_candidates_per_query is not None:
+            sorted_union = sorted_all[:config.max_candidates_per_query]
+        else:
+            sorted_union = sorted_all
+
+        # Config A: cap = 150 candidate set for controlled AB comparison
+        sorted_union_150 = sorted_all[:150]
+        hit_cap_150 = 1 if len(sorted_all) > 150 else 0
+        result.queries_hitting_cap_150 += hit_cap_150
 
         num_cands = len(sorted_union)
+        num_cands_150 = len(sorted_union_150)
+
         if len(result.candidate_lengths) < 10000:
             result.candidate_lengths.append(num_cands)
         result.candidate_histogram[num_cands] += 1
         result.total_candidate_pairs += num_cands
+
+        result.candidate_histogram_cap150[num_cands_150] += 1
+        result.total_candidate_pairs_cap150 += num_cands_150
 
         # Evaluate cumulative recall for this S1
         if num_true > 0:
             recovered = set(sorted_union) & true_source_targets
             n_rec = len(recovered)
             result.recovered_gt_edges += n_rec
+            result.s1_recovered_counts[s1_id] = n_rec
+
+            recovered_150 = set(sorted_union_150) & true_source_targets
+            n_rec_150 = len(recovered_150)
+            result.recovered_gt_edges_cap150 += n_rec_150
+            result.s1_recovered_counts_cap150[s1_id] = n_rec_150
+
+            # Number of recovered GT edges lost purely due to the 150 cap
+            result.gt_edges_lost_to_cap_150 += (n_rec - n_rec_150)
 
             if n_rec == num_true:
                 result.entities_fully_covered += 1
@@ -219,11 +253,39 @@ def run_partition_blocking(
             else:
                 result.entities_uncovered += 1
 
-            if collect_missed_edges and len(result.missed_gt_edges) < 10000:
-                missed = true_source_targets - set(sorted_union)
-                for m_target in missed:
-                    if len(result.missed_gt_edges) < 10000:
-                        result.missed_gt_edges.append((s1_id, m_target))
+            # Per-lane standalone and sequential marginal recovery on FINAL candidate set
+            for t in recovered:
+                # Standalone recovery: every lane that generated t
+                for lane in ORDERED_LANES:
+                    if t in lane_cands.get(lane, set()):
+                        result.lane_metrics[lane]["standalone_gt_recovered"] += 1
+
+                # Sequential marginal recovery: first lane in ORDERED_LANES that generated t
+                first_lane = None
+                for lane in ORDERED_LANES:
+                    if t in lane_cands.get(lane, set()):
+                        first_lane = lane
+                        break
+                if first_lane is not None:
+                    result.lane_metrics[first_lane]["marginal_gt_recovered"] += 1
+
+            # Failure analysis & K4 targeted diagnostic for missed targets
+            missed = true_source_targets - recovered
+            for m_target in missed:
+                if collect_missed_edges and len(result.missed_gt_edges) < 10000:
+                    result.missed_gt_edges.append((s1_id, m_target))
+
+                # Targeted K4 diagnostic:
+                k4_cands = lane_cands.get("K4", set())
+                s1_k4_keys = s1_lane_keys.get("K4", [])
+                if m_target in k4_cands:
+                    result.k4_diagnostics["k4_generated_truncated_by_cap"] += 1
+                elif len(s1_k4_keys) == 0:
+                    result.k4_diagnostics["parsing_failed_no_s1_structural_key"] += 1
+                elif "K4" in getattr(index, "last_query_oversized_lanes", set()):
+                    result.k4_diagnostics["k4_key_suppressed_as_oversized"] += 1
+                else:
+                    result.k4_diagnostics["k4_never_generated_pair"] += 1
 
         # Stream candidate pairs to disk
         if candidate_file_handle is not None:
@@ -239,9 +301,17 @@ def run_partition_blocking(
         buffer.clear()
 
     result.total_s1_queried = s1_count
+
+    # Automated assertion: sequential marginal sum MUST equal recovered GT edges
+    marginal_sum = sum(m["marginal_gt_recovered"] for m in result.lane_metrics.values())
+    assert marginal_sum == result.recovered_gt_edges, (
+        f"Marginal sum ({marginal_sum}) != recovered GT edges ({result.recovered_gt_edges}) in {country} {target_source}"
+    )
+
     print(
         f"[{country} | {target_source}] Finished {s1_count:,} S1 queries. "
         f"Recall: {result.recovered_gt_edges:,}/{result.total_gt_edges:,} ({result.recall*100:.2f}%) | "
+        f"Marginal sum verified: {marginal_sum:,} | "
         f"Total Candidates: {result.total_candidate_pairs:,}"
     )
 

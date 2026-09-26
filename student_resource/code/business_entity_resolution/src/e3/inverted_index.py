@@ -42,6 +42,7 @@ class PartitionInvertedIndex:
 
         self.is_frozen = False
         self.total_indexed_records = 0
+        self.last_query_oversized_lanes: Set[str] = set()
 
     def add_record(self, entity_id: str, name: str, address: str) -> None:
         """Add a target record to the partition index."""
@@ -113,6 +114,7 @@ class PartitionInvertedIndex:
         """
         candidates_by_lane: Dict[str, Set[str]] = {lane: set() for lane in self.config.enabled_lanes}
         oversized_events = 0
+        oversized_lanes: Set[str] = set()
 
         for lane, keys in s1_lane_keys.items():
             if lane not in self.index:
@@ -125,6 +127,7 @@ class PartitionInvertedIndex:
                 if key in oversized_set:
                     # Oversized block: suppress enumeration to prevent N x M explosion
                     oversized_events += 1
+                    oversized_lanes.add(lane)
                     continue
 
                 if key in lane_dict:
@@ -132,4 +135,5 @@ class PartitionInvertedIndex:
                     for idx in postings:
                         candidates_by_lane[lane].add(self.target_ids[idx])
 
+        self.last_query_oversized_lanes = oversized_lanes
         return candidates_by_lane, oversized_events

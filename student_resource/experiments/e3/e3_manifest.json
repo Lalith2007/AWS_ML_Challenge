@@ -2,11 +2,22 @@
   "stage": "E3",
   "description": "L2 Symbolic Multi-Lane Blocking & Candidate Validation",
   "status": "PASS WITH FINDINGS",
-  "duration_seconds": 1343.07,
+  "duration_seconds": 1442.91,
   "gt_integrity": {
     "total_gt_checked": 7638365,
     "cross_country_violations": 0,
     "is_safe": true
+  },
+  "candidate_integrity": {
+    "is_valid": true,
+    "header_valid": true,
+    "total_candidate_pairs": 878926163,
+    "expected_candidate_pairs": 878926163,
+    "duplicate_pairs": 0,
+    "malformed_rows": 0,
+    "source_mismatches": 0,
+    "gt_edges_in_candidate_file": 6340434,
+    "expected_gt_recovered": 6340434
   },
   "configuration": {
     "enabled_lanes": [
@@ -19,115 +30,170 @@
       "K7"
     ],
     "max_block_size": 500,
-    "max_candidates_per_query": 150,
+    "max_candidates_per_query": null,
     "min_token_len": 3,
     "max_token_doc_freq": 2000,
     "ngram_size": 3
   },
   "overall_metrics": {
     "total_gt_edges": 7638365,
-    "recovered_gt_edges": 6131064,
-    "overall_recall": 0.802667,
-    "overall_recall_pct": 80.267,
-    "total_candidate_pairs": 465180555,
-    "blocking_precision_proxy": 0.01318,
-    "candidate_to_gt_ratio": 60.9
+    "recovered_gt_edges": 6340434,
+    "overall_recall": 0.830077,
+    "overall_recall_pct": 83.008,
+    "total_candidate_pairs": 878926163,
+    "blocking_precision_proxy": 0.007214,
+    "candidate_to_gt_ratio": 115.07
   },
   "source_breakdown": {
     "S2": {
       "total_gt": 3693619,
-      "recovered_gt": 2982846,
-      "recall": 0.807567,
-      "recall_pct": 80.757
+      "recovered_gt": 3074794,
+      "recall": 0.832461,
+      "recall_pct": 83.246
     },
     "S3": {
       "total_gt": 3944746,
-      "recovered_gt": 3148218,
-      "recall": 0.798079,
-      "recall_pct": 79.808
+      "recovered_gt": 3265640,
+      "recall": 0.827845,
+      "recall_pct": 82.785
     }
   },
   "country_breakdown": {
     "India": {
       "total_gt": 3059843,
-      "recovered_gt": 2119656,
-      "recall": 0.692734,
-      "recall_pct": 69.273
+      "recovered_gt": 2223026,
+      "recall": 0.726516,
+      "recall_pct": 72.652
     },
     "US": {
       "total_gt": 4578522,
-      "recovered_gt": 4011408,
-      "recall": 0.876136,
-      "recall_pct": 87.614
+      "recovered_gt": 4117408,
+      "recall": 0.899288,
+      "recall_pct": 89.929
     }
   },
   "entity_coverage": {
-    "entities_with_gt": 3859621,
-    "entities_fully_covered": 2675668,
-    "entities_fully_covered_pct": 69.32,
-    "entities_partially_covered": 756372,
-    "entities_partially_covered_pct": 19.6,
-    "entities_uncovered": 427581,
-    "entities_uncovered_pct": 11.08
+    "total_s1_entities": 2206821,
+    "entities_with_gt": 2083574,
+    "entities_fully_covered": 1279781,
+    "entities_fully_covered_pct": 61.42,
+    "entities_partially_covered": 728410,
+    "entities_partially_covered_pct": 34.96,
+    "entities_uncovered": 75383,
+    "entities_uncovered_pct": 3.62
   },
   "candidate_volume_stats": {
-    "total_candidate_pairs": 465180555,
-    "mean_per_s1": 105.4,
+    "total_candidate_pairs": 878926163,
+    "mean_per_s1": 199.14,
     "median_per_s1": 136.0,
-    "p90_per_s1": 150.0,
-    "p95_per_s1": 150.0,
-    "p99_per_s1": 150.0,
-    "max_per_s1": 150,
+    "p90_per_s1": 471.0,
+    "p95_per_s1": 546.0,
+    "p99_per_s1": 769.0,
+    "max_per_s1": 1852,
     "min_per_s1": 0
+  },
+  "ab_cap_comparison": {
+    "config_a_cap_150": {
+      "name": "Configuration A (Hard Cap = 150)",
+      "recovered_gt_edges": 6131064,
+      "recall_pct": 80.267,
+      "total_candidate_pairs": 465180555,
+      "candidate_to_gt_ratio": 60.9,
+      "queries_hitting_cap": 2059217,
+      "queries_hitting_cap_pct": 46.66,
+      "gt_edges_lost_to_cap": 209370,
+      "fully_covered_entities": 1163201,
+      "fully_covered_pct": 55.83
+    },
+    "config_b_untruncated": {
+      "name": "Configuration B (Untruncated / Selective Key Postings)",
+      "recovered_gt_edges": 6340434,
+      "recall_pct": 83.008,
+      "total_candidate_pairs": 878926163,
+      "candidate_to_gt_ratio": 115.07,
+      "queries_hitting_cap": 0,
+      "queries_hitting_cap_pct": 0.0,
+      "gt_edges_lost_to_cap": 0,
+      "fully_covered_entities": 1279781,
+      "fully_covered_pct": 61.42
+    }
+  },
+  "k4_diagnostics": {
+    "k4_generated_truncated_by_cap": 0,
+    "k4_key_suppressed_as_oversized": 9324,
+    "parsing_failed_no_s1_structural_key": 130920,
+    "k4_never_generated_pair": 1157687,
+    "pair_not_country_source_compatible": 0
   },
   "lane_contributions": {
     "K1": {
       "candidate_pairs": 377367785,
-      "unique_gt_recovered": 5015692,
+      "standalone_gt_recovered": 5015692,
       "marginal_gt_recovered": 5015692,
+      "cumulative_gt_recovered": 5015692,
+      "standalone_recall_pct": 65.6645,
       "marginal_recall_pct": 65.6645,
+      "cumulative_recall_pct": 65.6645,
       "oversized_keys": 5063
     },
     "K2": {
       "candidate_pairs": 125822780,
-      "unique_gt_recovered": 4074813,
+      "standalone_gt_recovered": 4074813,
       "marginal_gt_recovered": 367049,
+      "cumulative_gt_recovered": 5382741,
+      "standalone_recall_pct": 53.3467,
       "marginal_recall_pct": 4.8053,
+      "cumulative_recall_pct": 70.4698,
       "oversized_keys": 209
     },
     "K3": {
       "candidate_pairs": 444416846,
-      "unique_gt_recovered": 4806905,
+      "standalone_gt_recovered": 4806905,
       "marginal_gt_recovered": 216582,
+      "cumulative_gt_recovered": 5599323,
+      "standalone_recall_pct": 62.9311,
       "marginal_recall_pct": 2.8354,
+      "cumulative_recall_pct": 73.3053,
       "oversized_keys": 3259
     },
     "K4": {
       "candidate_pairs": 72746509,
-      "unique_gt_recovered": 4317795,
+      "standalone_gt_recovered": 4317795,
       "marginal_gt_recovered": 639404,
+      "cumulative_gt_recovered": 6238727,
+      "standalone_recall_pct": 56.5277,
       "marginal_recall_pct": 8.371,
+      "cumulative_recall_pct": 81.6762,
       "oversized_keys": 65
     },
     "K5": {
       "candidate_pairs": 73167134,
-      "unique_gt_recovered": 3400362,
+      "standalone_gt_recovered": 3400362,
       "marginal_gt_recovered": 95512,
+      "cumulative_gt_recovered": 6334239,
+      "standalone_recall_pct": 44.5169,
       "marginal_recall_pct": 1.2504,
+      "cumulative_recall_pct": 82.9266,
       "oversized_keys": 128
     },
     "K6": {
       "candidate_pairs": 205448897,
-      "unique_gt_recovered": 1871780,
+      "standalone_gt_recovered": 1871780,
       "marginal_gt_recovered": 5789,
+      "cumulative_gt_recovered": 6340028,
+      "standalone_recall_pct": 24.505,
       "marginal_recall_pct": 0.0758,
+      "cumulative_recall_pct": 83.0024,
       "oversized_keys": 3190
     },
     "K7": {
       "candidate_pairs": 305684,
-      "unique_gt_recovered": 3082,
+      "standalone_gt_recovered": 3082,
       "marginal_gt_recovered": 406,
+      "cumulative_gt_recovered": 6340434,
+      "standalone_recall_pct": 0.0403,
       "marginal_recall_pct": 0.0053,
+      "cumulative_recall_pct": 83.0077,
       "oversized_keys": 70
     }
   },
@@ -136,76 +202,76 @@
     "dimensions": {
       "name_bucket": {
         "EMPTY_NAME": {
-          "count": 3363,
-          "percentage": 67.26
+          "count": 3688,
+          "percentage": 73.76
         },
         "LOW_SIMILARITY": {
-          "count": 1198,
-          "percentage": 23.96
+          "count": 980,
+          "percentage": 19.6
         },
         "SUBSTRING_NAME": {
-          "count": 229,
-          "percentage": 4.58
+          "count": 186,
+          "percentage": 3.72
         },
         "HIGH_SIMILARITY": {
-          "count": 180,
-          "percentage": 3.6
+          "count": 125,
+          "percentage": 2.5
         },
         "EXACT_NAME": {
-          "count": 30,
-          "percentage": 0.6
+          "count": 21,
+          "percentage": 0.42
         }
       },
       "address_bucket": {
         "SHARED_NUMBER_POSTAL": {
-          "count": 3521,
-          "percentage": 70.42
+          "count": 3504,
+          "percentage": 70.08
         },
         "SHARED_LOCALITY": {
-          "count": 704,
-          "percentage": 14.08
+          "count": 731,
+          "percentage": 14.62
         },
         "EXACT_ADDRESS": {
-          "count": 554,
-          "percentage": 11.08
+          "count": 549,
+          "percentage": 10.98
         },
         "DIFFERENT_ADDRESS": {
-          "count": 137,
-          "percentage": 2.74
+          "count": 149,
+          "percentage": 2.98
         },
         "EMPTY_ADDRESS": {
-          "count": 84,
-          "percentage": 1.68
+          "count": 67,
+          "percentage": 1.34
         }
       },
       "script_mismatch": {
         "YES": {
-          "count": 3437,
-          "percentage": 68.74
+          "count": 3759,
+          "percentage": 75.18
         },
         "NO": {
-          "count": 1563,
-          "percentage": 31.26
+          "count": 1241,
+          "percentage": 24.82
         }
       },
       "transliteration": {
         "TRANSLITERATION_TARGET": {
-          "count": 3437,
-          "percentage": 68.74
+          "count": 3759,
+          "percentage": 75.18
         },
         "LATIN_VARIATION": {
-          "count": 1563,
-          "percentage": 31.26
+          "count": 1241,
+          "percentage": 24.82
         }
       },
       "dba_involvement": {
         "STANDARD_NAME": {
-          "count": 4558,
-          "percentage": 91.16
+          "count": 4670,
+          "percentage": 93.4
         },
         "DBA_INVOLVED": {
-          "count": 442,
-          "percentage": 8.84
+          "count": 330,
+          "percentage": 6.6
         }
       },
       "country": {
@@ -225,39 +291,51 @@
   "artifacts": {
     "candidate_pairs.tsv": {
       "path": "student_resource/experiments/e3/candidate_pairs.tsv",
-      "size_bytes": 13386869280,
-      "line_count": 465180556,
-      "sha256": "ef93bdde108ba0a53c2fb377fa8b74ef5f774ddc93dc884acc13226484f089dc"
+      "size_bytes": 25293382737,
+      "line_count": 878926164,
+      "sha256": "079f57263082de6953e4afc657b44367779a953a531ac5899dc8fd7780964008"
     },
     "e3_report.json": {
       "path": "student_resource/experiments/e3/e3_report.json",
-      "size_bytes": 5082,
-      "line_count": 218,
-      "sha256": "65e04880fe65d49696bbf302d86ea6f9e903bde551ded0b7a8e86772767fc29f"
+      "size_bytes": 7122,
+      "line_count": 273,
+      "sha256": "2e2ba617177f2cbb75a4e57ea465723cdc71b086ae7cc6c29d896f204545ca63"
     },
     "e3_report.md": {
       "path": "student_resource/experiments/e3/e3_report.md",
-      "size_bytes": 4614,
-      "line_count": 107,
-      "sha256": "07f889b98b65f3d9cb5a227a309d7921b836790b784a7bd8805768f50c0de861"
+      "size_bytes": 7041,
+      "line_count": 147,
+      "sha256": "45ca6e1f777a92c16b1833ec4fa0d62a2b51d4dc0dbf248f7c25fe5119ecbcfe"
     },
     "e3_metrics_overall.csv": {
       "path": "student_resource/experiments/e3/e3_metrics_overall.csv",
-      "size_bytes": 389,
+      "size_bytes": 392,
       "line_count": 16,
-      "sha256": "4f0d4cb4014ac1bbd5e6200f14ea980741773be18251e21bcf6999c116a9da10"
+      "sha256": "1cf3786905715d156ebdb310cdbd3e5f1a176466fc60c1123423e7efff115f66"
     },
     "e3_lane_contributions.csv": {
       "path": "student_resource/experiments/e3/e3_lane_contributions.csv",
-      "size_bytes": 367,
+      "size_bytes": 451,
       "line_count": 8,
-      "sha256": "b3f48d1fdfa2ec6023d99551f4cda00554e98b9fbafce9c1dd91f9f878f1ccb9"
+      "sha256": "028ed040be4339964f9410c2830bb1e6f3911c471a4b689aee5646e4a06b5342"
     },
     "e3_failure_analysis.csv": {
       "path": "student_resource/experiments/e3/e3_failure_analysis.csv",
-      "size_bytes": 714,
+      "size_bytes": 711,
       "line_count": 19,
-      "sha256": "4d9371649dc329629a5780122688ac1943cf2da17bcf27d2e20068cd8b6e1030"
+      "sha256": "a76a33fa020365b4c7f7154b22d092d3fe7338fdb651c9deffe88f835a2f5169"
+    },
+    "e3_ab_cap_comparison.csv": {
+      "path": "student_resource/experiments/e3/e3_ab_cap_comparison.csv",
+      "size_bytes": 404,
+      "line_count": 3,
+      "sha256": "5d173a760227f317ca20fedd395bb151ab38d9fbd2e165a360c6666c8a37cde0"
+    },
+    "e3_k4_diagnostics.csv": {
+      "path": "student_resource/experiments/e3/e3_k4_diagnostics.csv",
+      "size_bytes": 241,
+      "line_count": 6,
+      "sha256": "c9bd3d5e146c848f85a4b9864dee990c5c8d4270ba0577b3b57433c3eb59dabb"
     }
   }
 }

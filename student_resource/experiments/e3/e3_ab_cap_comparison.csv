@@ -1,0 +1,3 @@
+configuration,recovered_gt_edges,recall_pct,total_candidate_pairs,candidate_to_gt_ratio,queries_hitting_cap,queries_hitting_cap_pct,gt_edges_lost_to_cap,fully_covered_entities,fully_covered_pct
+Configuration A (Hard Cap = 150),6131064,80.267,465180555,60.9,2059217,46.66,209370,1163201,55.83
+Configuration B (Untruncated / Selective Key Postings),6340434,83.008,878926163,115.07,0,0.0,0,1279781,61.42

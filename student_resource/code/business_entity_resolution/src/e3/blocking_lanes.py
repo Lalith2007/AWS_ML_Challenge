@@ -35,7 +35,7 @@ class BlockingConfig:
         default_factory=lambda: ["K1", "K2", "K3", "K4", "K5", "K6", "K7"]
     )
     max_block_size: int = 500  # Maximum posting list size before block suppression
-    max_candidates_per_query: int = 100  # Safety cap on candidate targets per S1 query
+    max_candidates_per_query: Optional[int] = None  # Configurable candidate cap (None = no query-level truncation)
     min_token_len: int = 3
     max_token_doc_freq: int = 2000  # Gating threshold to suppress ubiquitous tokens
     ngram_size: int = 3

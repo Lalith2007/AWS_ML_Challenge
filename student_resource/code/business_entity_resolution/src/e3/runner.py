@@ -33,7 +33,7 @@ def compute_file_sha256(filepath: Path) -> str:
     """Compute sha256 checksum of a file."""
     h = hashlib.sha256()
     with open(filepath, "rb") as f:
-        while chunk := f.read(65536):
+        while chunk := f.read(1048576):
             h.update(chunk)
     return h.hexdigest()
 
@@ -195,6 +195,99 @@ def sample_missed_records(
     return categorized
 
 
+def verify_candidate_file_integrity(
+    candidate_path: Path,
+    expected_pairs: int,
+    recovered_gt_edges: int,
+    truth_by_s1: Optional[Dict[str, Set[str]]] = None,
+) -> Dict[str, Any]:
+    """
+    Streamingly verify candidate_pairs.tsv integrity:
+    1. Exact header matching: source1_entity_id\tsource2_or_source3_entity_id\tsource
+    2. Column count == 3
+    3. Valid IDs and correct source prefixes (S2- for S2, S3- for S3)
+    4. Zero duplicates within S1 candidate blocks
+    5. Exact count matches expected_pairs
+    6. All recovered GT edges exist in candidate_pairs.tsv
+    """
+    print("[Verification] Verifying candidate_pairs.tsv integrity...")
+    total_pairs = 0
+    duplicate_pairs = 0
+    malformed_rows = 0
+    source_mismatches = 0
+    gt_recovered_count = 0
+    header_valid = False
+
+    current_s1: Optional[str] = None
+    seen_targets_for_s1: Set[str] = set()
+
+    with open(candidate_path, "r", encoding="utf-8", errors="replace") as f:
+        header = f.readline()
+        if header == "source1_entity_id\tsource2_or_source3_entity_id\tsource\n":
+            header_valid = True
+
+        for line in f:
+            total_pairs += 1
+            parts = line.rstrip("\n").split("\t")
+            if len(parts) != 3:
+                malformed_rows += 1
+                continue
+            s1_id, target_id, source = parts[0], parts[1], parts[2]
+
+            # Source prefix check
+            expected_prefix = f"{source}-"
+            if not target_id.startswith(expected_prefix):
+                source_mismatches += 1
+
+            # Duplicate check within S1 query blocks
+            if s1_id == current_s1:
+                if target_id in seen_targets_for_s1:
+                    duplicate_pairs += 1
+                else:
+                    seen_targets_for_s1.add(target_id)
+            else:
+                current_s1 = s1_id
+                seen_targets_for_s1 = {target_id}
+
+            # Check if this candidate pair is a recovered GT edge
+            if truth_by_s1 and s1_id in truth_by_s1 and target_id in truth_by_s1[s1_id]:
+                gt_recovered_count += 1
+
+    print(
+        f"[Verification] Candidate integrity check complete: "
+        f"{total_pairs:,} candidate pairs verified. "
+        f"Header valid: {header_valid}. "
+        f"Duplicates: {duplicate_pairs}. "
+        f"Source mismatches: {source_mismatches}. "
+        f"Malformed rows: {malformed_rows}."
+    )
+    if truth_by_s1:
+        print(
+            f"[Verification] GT edges recovered in candidate file: {gt_recovered_count:,} / {recovered_gt_edges:,} expected."
+        )
+
+    is_valid = (
+        header_valid
+        and total_pairs == expected_pairs
+        and duplicate_pairs == 0
+        and malformed_rows == 0
+        and source_mismatches == 0
+        and (gt_recovered_count == recovered_gt_edges if truth_by_s1 else True)
+    )
+
+    return {
+        "is_valid": is_valid,
+        "header_valid": header_valid,
+        "total_candidate_pairs": total_pairs,
+        "expected_candidate_pairs": expected_pairs,
+        "duplicate_pairs": duplicate_pairs,
+        "malformed_rows": malformed_rows,
+        "source_mismatches": source_mismatches,
+        "gt_edges_in_candidate_file": gt_recovered_count,
+        "expected_gt_recovered": recovered_gt_edges,
+    }
+
+
 def run_e3_pipeline(
     s1_path: Path = TRAIN_FILES["S1"],
     s2_path: Path = TRAIN_FILES["S2"],
@@ -299,9 +392,17 @@ def run_e3_pipeline(
             entities_fully_covered=res_dict["entities_fully_covered"],
             entities_partially_covered=res_dict["entities_partially_covered"],
             entities_uncovered=res_dict["entities_uncovered"],
+            s1_recovered_counts=res_dict.get("s1_recovered_counts", {}),
+            s1_recovered_counts_cap150=res_dict.get("s1_recovered_counts_cap150", {}),
             lane_metrics=res_dict["lane_metrics"],
             candidate_lengths=res_dict.get("candidate_lengths", []),
             candidate_histogram=Counter({int(k): v for k, v in res_dict.get("candidate_histogram", {}).items()}),
+            candidate_histogram_cap150=Counter({int(k): v for k, v in res_dict.get("candidate_histogram_cap150", {}).items()}),
+            queries_hitting_cap_150=res_dict.get("queries_hitting_cap_150", 0),
+            gt_edges_lost_to_cap_150=res_dict.get("gt_edges_lost_to_cap_150", 0),
+            recovered_gt_edges_cap150=res_dict.get("recovered_gt_edges_cap150", 0),
+            total_candidate_pairs_cap150=res_dict.get("total_candidate_pairs_cap150", 0),
+            k4_diagnostics=Counter(res_dict.get("k4_diagnostics", {})),
             total_oversized_query_events=res_dict["total_oversized_query_events"],
             missed_gt_edges=[tuple(pair) for pair in res_dict["missed_gt_edges"]],
         )
@@ -323,14 +424,29 @@ def run_e3_pipeline(
     duration = time.time() - t0
 
     # 6. Evaluation Summary
+    total_s1_entities = count_lines(s1_path) - 1
+    if sample_size and sample_size < total_s1_entities:
+        total_s1_entities = sample_size
+
     summary = E3EvaluationSummary(
         partition_results=partition_results,
         failure_analysis=failure_analysis,
         config=config.to_dict(),
         duration_seconds=duration,
+        truth_by_s1=truth_by_s1,
+        total_s1_entities=total_s1_entities,
     )
 
-    # 7. Write Artifacts
+    # 7. Candidate file integrity verification
+    integrity_result = verify_candidate_file_integrity(
+        candidate_path=candidate_path,
+        expected_pairs=summary.total_candidate_pairs,
+        recovered_gt_edges=summary.recovered_gt_edges,
+        truth_by_s1=truth_by_s1,
+    )
+    assert integrity_result["is_valid"], f"Candidate file integrity validation failed: {integrity_result}"
+
+    # 8. Write Artifacts
     # A. JSON Report
     report_json_path = output_dir / "e3_report.json"
     with open(report_json_path, "w", encoding="utf-8") as f:
@@ -356,15 +472,24 @@ def run_e3_pipeline(
     lane_csv_path = output_dir / "e3_lane_contributions.csv"
     with open(lane_csv_path, "w", encoding="utf-8", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["lane", "candidate_pairs", "unique_gt_recovered", "marginal_gt_recovered", "marginal_recall_pct", "oversized_keys"])
+        writer.writerow([
+            "lane",
+            "candidate_pairs",
+            "standalone_gt_recovered",
+            "marginal_gt_recovered",
+            "cumulative_gt_recovered",
+            "marginal_recall_pct",
+            "oversized_keys",
+        ])
         for lane, stats in summary.lane_summary.items():
             writer.writerow([
                 lane,
                 stats["candidate_pairs"],
-                stats["unique_gt_recovered"],
-                stats["marginal_gt_recovered"],
-                stats["marginal_recall_pct"],
-                stats["oversized_keys"],
+                stats.get("standalone_gt_recovered", 0),
+                stats.get("marginal_gt_recovered", 0),
+                stats.get("cumulative_gt_recovered", 0),
+                stats.get("marginal_recall_pct", 0.0),
+                stats.get("oversized_keys", 0),
             ])
 
     failure_csv_path = output_dir / "e3_failure_analysis.csv"
@@ -375,10 +500,44 @@ def run_e3_pipeline(
             for cat, data in cats.items():
                 writer.writerow([dim, cat, data["count"], data["percentage"]])
 
-    # 8. Candidate file verification
-    print("[Verification] Verifying candidate_pairs.tsv formatting...")
-    cand_line_count = count_lines(candidate_path)
-    print(f"[Verification] candidate_pairs.tsv generated: {cand_line_count:,} lines (including header).")
+    ab_csv_path = output_dir / "e3_ab_cap_comparison.csv"
+    with open(ab_csv_path, "w", encoding="utf-8", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow([
+            "configuration",
+            "recovered_gt_edges",
+            "recall_pct",
+            "total_candidate_pairs",
+            "candidate_to_gt_ratio",
+            "queries_hitting_cap",
+            "queries_hitting_cap_pct",
+            "gt_edges_lost_to_cap",
+            "fully_covered_entities",
+            "fully_covered_pct",
+        ])
+        for cfg_key in ("config_a_cap_150", "config_b_untruncated"):
+            cdata = summary.ab_comparison[cfg_key]
+            writer.writerow([
+                cdata["name"],
+                cdata["recovered_gt_edges"],
+                cdata["recall_pct"],
+                cdata["total_candidate_pairs"],
+                cdata["candidate_to_gt_ratio"],
+                cdata["queries_hitting_cap"],
+                cdata["queries_hitting_cap_pct"],
+                cdata["gt_edges_lost_to_cap"],
+                cdata["fully_covered_entities"],
+                cdata["fully_covered_pct"],
+            ])
+
+    k4_csv_path = output_dir / "e3_k4_diagnostics.csv"
+    with open(k4_csv_path, "w", encoding="utf-8", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["failure_mode", "count", "percentage"])
+        total_k4_diag = sum(summary.k4_diagnostic_summary.values())
+        for mode, count in summary.k4_diagnostic_summary.most_common():
+            pct = round((count / total_k4_diag * 100), 2) if total_k4_diag > 0 else 0.0
+            writer.writerow([mode, count, pct])
 
     # 9. Build Manifest
     artifact_files = [
@@ -388,6 +547,8 @@ def run_e3_pipeline(
         metrics_csv_path,
         lane_csv_path,
         failure_csv_path,
+        ab_csv_path,
+        k4_csv_path,
     ]
     manifest_artifacts = {}
     for p in artifact_files:
@@ -404,12 +565,15 @@ def run_e3_pipeline(
         "status": summary.determine_status(),
         "duration_seconds": round(duration, 2),
         "gt_integrity": gt_integrity,
+        "candidate_integrity": integrity_result,
         "configuration": config.to_dict(),
         "overall_metrics": summary.to_dict()["overall_metrics"],
         "source_breakdown": summary.to_dict()["source_breakdown"],
         "country_breakdown": summary.to_dict()["country_breakdown"],
         "entity_coverage": summary.to_dict()["entity_coverage"],
         "candidate_volume_stats": summary.to_dict()["candidate_volume_stats"],
+        "ab_cap_comparison": summary.ab_comparison,
+        "k4_diagnostics": dict(summary.k4_diagnostic_summary),
         "lane_contributions": summary.lane_summary,
         "failure_analysis": failure_analysis,
         "artifacts": manifest_artifacts,
@@ -443,7 +607,12 @@ def main():
     parser.add_argument("--output-dir", type=Path, default=DEFAULT_E3_OUTPUT_DIR)
     parser.add_argument("--sample-size", type=int, default=None, help="Sample size of S1 entities to evaluate")
     parser.add_argument("--max-block-size", type=int, default=500, help="Max posting list size")
-    parser.add_argument("--max-candidates-per-query", type=int, default=150, help="Max candidates per S1 query")
+    parser.add_argument(
+        "--max-candidates-per-query",
+        type=lambda x: None if str(x).lower() in ("none", "null", "") else int(x),
+        default=None,
+        help="Max candidates per S1 query (default: None for untruncated candidate generation bounded by max_block_size)",
+    )
     parser.add_argument("--max-token-doc-freq", type=int, default=2000, help="Max token document frequency")
     parser.add_argument("--enabled-lanes", type=str, default="K1,K2,K3,K4,K5,K6,K7")
 

@@ -216,3 +216,144 @@ def test_synthetic_case_multiple_true_matches(synthetic_e3_data):
 
     expected = {"S2-101", "S2-102", "S3-301"}
     assert expected.issubset(s1_1_cands), f"Expected {expected} to be in candidates, got {s1_1_cands}"
+
+
+def test_unique_s1_entity_coverage_mathematical_consistency(synthetic_e3_data):
+    """
+    Critical Test: S1 Entity Coverage must evaluate on unique S1 entities.
+    Must strictly satisfy:
+    1. entities_with_gt = fully_covered + partially_covered + uncovered
+    2. fully_covered <= entities_with_gt <= total_s1_entities
+    """
+    output_dir = synthetic_e3_data["tmp_path"] / "out_coverage_test"
+    manifest = run_e3_pipeline(
+        s1_path=synthetic_e3_data["s1"],
+        s2_path=synthetic_e3_data["s2"],
+        s3_path=synthetic_e3_data["s3"],
+        gt_path=synthetic_e3_data["gt"],
+        output_dir=output_dir,
+    )
+
+    cov = manifest["entity_coverage"]
+    total_s1 = cov["total_s1_entities"]
+    with_gt = cov["entities_with_gt"]
+    fully = cov["entities_fully_covered"]
+    partially = cov["entities_partially_covered"]
+    uncovered = cov["entities_uncovered"]
+
+    # Synthetic dataset has 3 S1 records (S1-1, S1-2, S1-3), 2 of which have GT (S1-1, S1-2)
+    assert total_s1 == 3
+    assert with_gt == 2
+    assert fully + partially + uncovered == with_gt
+    assert fully <= with_gt <= total_s1
+    assert with_gt < total_s1  # S1-3 has no GT
+
+
+def test_sequential_marginal_sum_reconciliation(synthetic_e3_data):
+    """
+    Critical Test: Sequential marginals (K1-K7) evaluated on the final candidate union
+    MUST sum exactly to total unique GT recovered by the final union.
+    """
+    output_dir = synthetic_e3_data["tmp_path"] / "out_marginals_test"
+    manifest = run_e3_pipeline(
+        s1_path=synthetic_e3_data["s1"],
+        s2_path=synthetic_e3_data["s2"],
+        s3_path=synthetic_e3_data["s3"],
+        gt_path=synthetic_e3_data["gt"],
+        output_dir=output_dir,
+    )
+
+    recovered_edges = manifest["overall_metrics"]["recovered_gt_edges"]
+    lanes = manifest["lane_contributions"]
+    marginal_sum = sum(data["marginal_gt_recovered"] for data in lanes.values())
+
+    assert marginal_sum == recovered_edges, (
+        f"Marginal sum ({marginal_sum}) != recovered GT edges ({recovered_edges})"
+    )
+
+    # Verify cumulative recall is monotonically non-decreasing
+    last_cum = 0
+    for lane_id in ["K1", "K2", "K3", "K4", "K5", "K6", "K7"]:
+        cum = lanes[lane_id]["cumulative_gt_recovered"]
+        assert cum >= last_cum
+        last_cum = cum
+    assert last_cum == recovered_edges
+
+
+def test_ab_cap_comparison_reporting(synthetic_e3_data):
+    """
+    Critical Test: Ensure AB cap comparison and K4 diagnostics CSV and JSON artifacts are created.
+    """
+    output_dir = synthetic_e3_data["tmp_path"] / "out_ab_test"
+    manifest = run_e3_pipeline(
+        s1_path=synthetic_e3_data["s1"],
+        s2_path=synthetic_e3_data["s2"],
+        s3_path=synthetic_e3_data["s3"],
+        gt_path=synthetic_e3_data["gt"],
+        output_dir=output_dir,
+    )
+
+    assert "ab_cap_comparison" in manifest
+    assert "config_a_cap_150" in manifest["ab_cap_comparison"]
+    assert "config_b_untruncated" in manifest["ab_cap_comparison"]
+
+    ab_csv = output_dir / "e3_ab_cap_comparison.csv"
+    assert ab_csv.is_file()
+    assert ab_csv.stat().st_size > 0
+
+    k4_csv = output_dir / "e3_k4_diagnostics.csv"
+    assert k4_csv.is_file()
+    assert k4_csv.stat().st_size > 0
+
+    assert "candidate_integrity" in manifest
+    assert manifest["candidate_integrity"]["is_valid"] is True
+
+
+def test_candidate_integrity_validation_failures(tmp_path: Path):
+    """
+    Test verify_candidate_file_integrity catches corrupt headers, duplicates, and malformed rows.
+    """
+    from e3.runner import verify_candidate_file_integrity
+
+    # 1. Valid file
+    valid_file = tmp_path / "cand_valid.tsv"
+    valid_file.write_text(
+        "source1_entity_id\tsource2_or_source3_entity_id\tsource\n"
+        "S1-1\tS2-101\tS2\n"
+        "S1-1\tS2-102\tS2\n"
+    )
+    res_valid = verify_candidate_file_integrity(
+        valid_file, expected_pairs=2, recovered_gt_edges=2, truth_by_s1={"S1-1": {"S2-101", "S2-102"}}
+    )
+    assert res_valid["is_valid"] is True
+
+    # 2. Corrupt header
+    bad_header_file = tmp_path / "cand_bad_header.tsv"
+    bad_header_file.write_text(
+        "s1\ts2\tsrc\n"
+        "S1-1\tS2-101\tS2\n"
+    )
+    res_bad_header = verify_candidate_file_integrity(bad_header_file, expected_pairs=1, recovered_gt_edges=1)
+    assert res_bad_header["is_valid"] is False
+    assert res_bad_header["header_valid"] is False
+
+    # 3. Duplicate within block
+    dup_file = tmp_path / "cand_dup.tsv"
+    dup_file.write_text(
+        "source1_entity_id\tsource2_or_source3_entity_id\tsource\n"
+        "S1-1\tS2-101\tS2\n"
+        "S1-1\tS2-101\tS2\n"
+    )
+    res_dup = verify_candidate_file_integrity(dup_file, expected_pairs=2, recovered_gt_edges=1)
+    assert res_dup["is_valid"] is False
+    assert res_dup["duplicate_pairs"] == 1
+
+    # 4. Source prefix mismatch
+    mismatch_file = tmp_path / "cand_mismatch.tsv"
+    mismatch_file.write_text(
+        "source1_entity_id\tsource2_or_source3_entity_id\tsource\n"
+        "S1-1\tS3-101\tS2\n"
+    )
+    res_mismatch = verify_candidate_file_integrity(mismatch_file, expected_pairs=1, recovered_gt_edges=0)
+    assert res_mismatch["is_valid"] is False
+    assert res_mismatch["source_mismatches"] == 1
