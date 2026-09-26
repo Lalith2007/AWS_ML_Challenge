@@ -12,8 +12,26 @@ aws_challenge
 .DS_Store
 Thumbs.db
 
-# Challenge raw datasets (multi-gigabyte raw TSVs)
+# Challenge raw datasets and archives (multi-gigabyte raw data)
+dataset/
 student_resource/dataset/
+**/dataset/**
+*train_source*.tsv
+*train_ground_truth*.tsv
+*val_source*.tsv
+*val_ground_truth*.tsv
+*test_source*.tsv
+*test_ground_truth*.tsv
+*.tsv.gz
+*.csv.gz
+*.tar.gz
+*.zip
+*.parquet
+*.h5
+*.feather
+
+# Keep fixture files for testing
+!tests/fixtures/**
 
 # Problem statement documents and PDFs
 AWS_PS.md
@@ -24,3 +42,8 @@ awsoptimization.pdf
 # Virtual environments and secrets
 venv/
 .env
+
+# Generated large candidate pairs and submission files
+**/candidate_pairs.tsv
+**/matching_results.tsv
+**/matching_results.tsv.gz

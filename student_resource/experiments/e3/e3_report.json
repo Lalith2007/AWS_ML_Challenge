@@ -1,0 +1,273 @@
+{
+  "status": "PASS WITH FINDINGS",
+  "duration_seconds": 1442.91,
+  "configuration": {
+    "enabled_lanes": [
+      "K1",
+      "K2",
+      "K3",
+      "K4",
+      "K5",
+      "K6",
+      "K7"
+    ],
+    "max_block_size": 500,
+    "max_candidates_per_query": null,
+    "min_token_len": 3,
+    "max_token_doc_freq": 2000,
+    "ngram_size": 3
+  },
+  "overall_metrics": {
+    "total_gt_edges": 7638365,
+    "recovered_gt_edges": 6340434,
+    "overall_recall": 0.830077,
+    "overall_recall_pct": 83.008,
+    "total_candidate_pairs": 878926163,
+    "blocking_precision_proxy": 0.007214,
+    "candidate_to_gt_ratio": 115.07
+  },
+  "source_breakdown": {
+    "S2": {
+      "total_gt": 3693619,
+      "recovered_gt": 3074794,
+      "recall": 0.832461,
+      "recall_pct": 83.246
+    },
+    "S3": {
+      "total_gt": 3944746,
+      "recovered_gt": 3265640,
+      "recall": 0.827845,
+      "recall_pct": 82.785
+    }
+  },
+  "country_breakdown": {
+    "India": {
+      "total_gt": 3059843,
+      "recovered_gt": 2223026,
+      "recall": 0.726516,
+      "recall_pct": 72.652
+    },
+    "US": {
+      "total_gt": 4578522,
+      "recovered_gt": 4117408,
+      "recall": 0.899288,
+      "recall_pct": 89.929
+    }
+  },
+  "entity_coverage": {
+    "total_s1_entities": 2206821,
+    "entities_with_gt": 2083574,
+    "entities_fully_covered": 1279781,
+    "entities_fully_covered_pct": 61.42,
+    "entities_partially_covered": 728410,
+    "entities_partially_covered_pct": 34.96,
+    "entities_uncovered": 75383,
+    "entities_uncovered_pct": 3.62
+  },
+  "candidate_volume_stats": {
+    "total_candidate_pairs": 878926163,
+    "mean_per_s1": 199.14,
+    "median_per_s1": 136.0,
+    "p90_per_s1": 471.0,
+    "p95_per_s1": 546.0,
+    "p99_per_s1": 769.0,
+    "max_per_s1": 1852,
+    "min_per_s1": 0
+  },
+  "lane_contributions": {
+    "K1": {
+      "candidate_pairs": 377367785,
+      "standalone_gt_recovered": 5015692,
+      "marginal_gt_recovered": 5015692,
+      "cumulative_gt_recovered": 5015692,
+      "standalone_recall_pct": 65.6645,
+      "marginal_recall_pct": 65.6645,
+      "cumulative_recall_pct": 65.6645,
+      "oversized_keys": 5063
+    },
+    "K2": {
+      "candidate_pairs": 125822780,
+      "standalone_gt_recovered": 4074813,
+      "marginal_gt_recovered": 367049,
+      "cumulative_gt_recovered": 5382741,
+      "standalone_recall_pct": 53.3467,
+      "marginal_recall_pct": 4.8053,
+      "cumulative_recall_pct": 70.4698,
+      "oversized_keys": 209
+    },
+    "K3": {
+      "candidate_pairs": 444416846,
+      "standalone_gt_recovered": 4806905,
+      "marginal_gt_recovered": 216582,
+      "cumulative_gt_recovered": 5599323,
+      "standalone_recall_pct": 62.9311,
+      "marginal_recall_pct": 2.8354,
+      "cumulative_recall_pct": 73.3053,
+      "oversized_keys": 3259
+    },
+    "K4": {
+      "candidate_pairs": 72746509,
+      "standalone_gt_recovered": 4317795,
+      "marginal_gt_recovered": 639404,
+      "cumulative_gt_recovered": 6238727,
+      "standalone_recall_pct": 56.5277,
+      "marginal_recall_pct": 8.371,
+      "cumulative_recall_pct": 81.6762,
+      "oversized_keys": 65
+    },
+    "K5": {
+      "candidate_pairs": 73167134,
+      "standalone_gt_recovered": 3400362,
+      "marginal_gt_recovered": 95512,
+      "cumulative_gt_recovered": 6334239,
+      "standalone_recall_pct": 44.5169,
+      "marginal_recall_pct": 1.2504,
+      "cumulative_recall_pct": 82.9266,
+      "oversized_keys": 128
+    },
+    "K6": {
+      "candidate_pairs": 205448897,
+      "standalone_gt_recovered": 1871780,
+      "marginal_gt_recovered": 5789,
+      "cumulative_gt_recovered": 6340028,
+      "standalone_recall_pct": 24.505,
+      "marginal_recall_pct": 0.0758,
+      "cumulative_recall_pct": 83.0024,
+      "oversized_keys": 3190
+    },
+    "K7": {
+      "candidate_pairs": 305684,
+      "standalone_gt_recovered": 3082,
+      "marginal_gt_recovered": 406,
+      "cumulative_gt_recovered": 6340434,
+      "standalone_recall_pct": 0.0403,
+      "marginal_recall_pct": 0.0053,
+      "cumulative_recall_pct": 83.0077,
+      "oversized_keys": 70
+    }
+  },
+  "ab_cap_comparison": {
+    "config_a_cap_150": {
+      "name": "Configuration A (Hard Cap = 150)",
+      "recovered_gt_edges": 6131064,
+      "recall_pct": 80.267,
+      "total_candidate_pairs": 465180555,
+      "candidate_to_gt_ratio": 60.9,
+      "queries_hitting_cap": 2059217,
+      "queries_hitting_cap_pct": 46.66,
+      "gt_edges_lost_to_cap": 209370,
+      "fully_covered_entities": 1163201,
+      "fully_covered_pct": 55.83
+    },
+    "config_b_untruncated": {
+      "name": "Configuration B (Untruncated / Selective Key Postings)",
+      "recovered_gt_edges": 6340434,
+      "recall_pct": 83.008,
+      "total_candidate_pairs": 878926163,
+      "candidate_to_gt_ratio": 115.07,
+      "queries_hitting_cap": 0,
+      "queries_hitting_cap_pct": 0.0,
+      "gt_edges_lost_to_cap": 0,
+      "fully_covered_entities": 1279781,
+      "fully_covered_pct": 61.42
+    }
+  },
+  "k4_diagnostics": {
+    "k4_generated_truncated_by_cap": 0,
+    "k4_key_suppressed_as_oversized": 9324,
+    "parsing_failed_no_s1_structural_key": 130920,
+    "k4_never_generated_pair": 1157687,
+    "pair_not_country_source_compatible": 0
+  },
+  "failure_analysis": {
+    "total_missed": 5000,
+    "dimensions": {
+      "name_bucket": {
+        "EMPTY_NAME": {
+          "count": 3688,
+          "percentage": 73.76
+        },
+        "LOW_SIMILARITY": {
+          "count": 980,
+          "percentage": 19.6
+        },
+        "SUBSTRING_NAME": {
+          "count": 186,
+          "percentage": 3.72
+        },
+        "HIGH_SIMILARITY": {
+          "count": 125,
+          "percentage": 2.5
+        },
+        "EXACT_NAME": {
+          "count": 21,
+          "percentage": 0.42
+        }
+      },
+      "address_bucket": {
+        "SHARED_NUMBER_POSTAL": {
+          "count": 3504,
+          "percentage": 70.08
+        },
+        "SHARED_LOCALITY": {
+          "count": 731,
+          "percentage": 14.62
+        },
+        "EXACT_ADDRESS": {
+          "count": 549,
+          "percentage": 10.98
+        },
+        "DIFFERENT_ADDRESS": {
+          "count": 149,
+          "percentage": 2.98
+        },
+        "EMPTY_ADDRESS": {
+          "count": 67,
+          "percentage": 1.34
+        }
+      },
+      "script_mismatch": {
+        "YES": {
+          "count": 3759,
+          "percentage": 75.18
+        },
+        "NO": {
+          "count": 1241,
+          "percentage": 24.82
+        }
+      },
+      "transliteration": {
+        "TRANSLITERATION_TARGET": {
+          "count": 3759,
+          "percentage": 75.18
+        },
+        "LATIN_VARIATION": {
+          "count": 1241,
+          "percentage": 24.82
+        }
+      },
+      "dba_involvement": {
+        "STANDARD_NAME": {
+          "count": 4670,
+          "percentage": 93.4
+        },
+        "DBA_INVOLVED": {
+          "count": 330,
+          "percentage": 6.6
+        }
+      },
+      "country": {
+        "India": {
+          "count": 5000,
+          "percentage": 100.0
+        }
+      },
+      "source": {
+        "S2": {
+          "count": 5000,
+          "percentage": 100.0
+        }
+      }
+    }
+  }
+}

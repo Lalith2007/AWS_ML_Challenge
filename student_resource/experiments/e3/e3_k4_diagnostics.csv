@@ -1,0 +1,6 @@
+failure_mode,count,percentage
+k4_never_generated_pair,1157687,89.19
+parsing_failed_no_s1_structural_key,130920,10.09
+k4_key_suppressed_as_oversized,9324,0.72
+k4_generated_truncated_by_cap,0,0.0
+pair_not_country_source_compatible,0,0.0

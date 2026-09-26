@@ -1,0 +1,16 @@
+metric,value
+total_gt_edges,7638365
+recovered_gt_edges,6340434
+overall_recall,0.830077
+overall_recall_pct,83.008
+total_candidate_pairs,878926163
+blocking_precision_proxy,0.007214
+candidate_to_gt_ratio,115.07
+S2_total_gt,3693619
+S2_recovered_gt,3074794
+S2_recall,0.832461
+S2_recall_pct,83.246
+S3_total_gt,3944746
+S3_recovered_gt,3265640
+S3_recall,0.827845
+S3_recall_pct,82.785
